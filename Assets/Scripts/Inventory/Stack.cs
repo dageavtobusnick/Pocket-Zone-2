@@ -1,5 +1,6 @@
 using System;
 
+[Serializable]
 public class Stack
 {
     private readonly Item _item;
@@ -10,6 +11,7 @@ public class Stack
         _item = item;
         _count = count;
     }
+
 
     public Item Item => _item;
 
@@ -34,5 +36,10 @@ public class Stack
             throw new ArgumentException("Нельзя прибавлять к null.");
         stack._count = Math.Max(stack._count - count, 0);
         return stack;
+    }
+
+    public StackData GetData()
+    {
+        return new StackData(_item.Id, _count);
     }
 }

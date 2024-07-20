@@ -12,6 +12,7 @@ public class HP : MonoBehaviour
 
     public int MaxHealth { get => _maxHealth; }
     public Team Team { get => _team; }
+    public int Health { get => _health;}
 
     public event Action<int> HealthChange;
     public event Action Dead;
@@ -33,4 +34,10 @@ public class HP : MonoBehaviour
             Dead?.Invoke();
         HealthChange?.Invoke(_health);
     }
+
+    public void LoadHealth(AlifeData alifeData)
+    {
+        _health = alifeData.HP;
+    }
+
 }

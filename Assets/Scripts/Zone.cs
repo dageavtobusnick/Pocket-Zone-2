@@ -10,6 +10,8 @@ public abstract class Zone : MonoBehaviour
 
     public void SetZone(Transform target, float radius)
     { 
+        if(_circleCollider == null)
+            _circleCollider = GetComponent<CircleCollider2D>();
         _target = target; 
         _circleCollider.radius = radius;
     }   

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,12 +13,17 @@ public class InventoryManager : MonoBehaviour, IPointerClickHandler
     private InventorySlot[] _slots;
     private Stack _selectedStack;
 
+    public Inventory Inventory { get => _inventory;}
+
     private void Awake()
     {
         _slots = GetComponentsInChildren<InventorySlot>();
         if (_slots == null || _slots.Length <= 0)
             throw new ArgumentException("Среди дочерних объектов нет слотов инвентаря.");
-        _inventory = new(_slots.Length);
+        if (_inventory == null)
+            _inventory = new(_slots.Length);
+        else
+            _inventory.SetSize(_slots.Length);
         UpdateUI();
         gameObject.SetActive(false);
         _inventory.InventoryUpdated += UpdateUI;
@@ -81,5 +87,16 @@ public class InventoryManager : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         ClearSelectedItem();
+    }
+
+    public void LoadInventory(PlayerData data, ItemRegistry itemRegistry)
+    {
+        if (_inventory == null)
+            _inventory = new(data.Inventory.Count);
+        foreach (var item in data.Inventory) 
+        {
+            _inventory.AddItem(itemRegistry.Items.First(x => x.Id == item.Id), item.Count);
+        }
+        _inventory.InventoryUpdated += UpdateUI;
     }
 }

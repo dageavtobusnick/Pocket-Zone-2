@@ -16,5 +16,5 @@ MonoBehaviour:
   _itemName: "9\xD718\u043C\u043C \u041F\u041C"
   _icon: {fileID: 21300000, guid: d45f0cae013abb84688afe6e4bc52845, type: 3}
   _maxStackSize: 40
-  _calibr: 0
   _damage: 10
+  _speed: 10

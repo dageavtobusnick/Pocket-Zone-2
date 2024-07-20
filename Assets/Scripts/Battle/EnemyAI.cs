@@ -1,9 +1,11 @@
 using Pathfinding;
+using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
 
 [RequireComponent(typeof(Damage))]
+[RequireComponent(typeof(HP))]
 [RequireComponent(typeof(AIPath))]
 [RequireComponent(typeof(AIDestinationSetter))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -41,11 +43,18 @@ public class EnemyAI : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private Damage _damage;
     private IEnumerator _retreater;
+    private HP _hp;
+
+    public event Action<EnemyAI> Died;
 
     void Awake()
     {
         _aiPath = GetComponent<AIPath>();
         _aiPath.maxSpeed = _normalSpeed;
+        if(_target == null)
+        {
+            _target = FindObjectOfType<PlayerController>().transform;
+        }
         GetComponent<AIDestinationSetter>().target = _target;
         _rigidbody = GetComponent<Rigidbody2D>();
         _damage = GetComponent<Damage>();
@@ -54,6 +63,8 @@ public class EnemyAI : MonoBehaviour
         _zoneOfView.SetZone(_target, _viewRange);
         _startAttackZone.SetZone(_target, _attackRange);
         _damage.SetDamage(_attackDamage);
+        _hp = GetComponent<HP>();
+
     }
 
     private void OnEnable()
@@ -61,6 +72,7 @@ public class EnemyAI : MonoBehaviour
         _startAttackZone.AttackStarted += CheckForAttack;
         _zoneOfView.TargetInZone += StartSearch;
         _damage.DamageGiven += TakeDamage;
+        _hp.Dead += OnDeath;
     }
 
     private void OnDisable()
@@ -68,8 +80,13 @@ public class EnemyAI : MonoBehaviour
         _startAttackZone.AttackStarted -= CheckForAttack;
         _zoneOfView.TargetInZone -= StartSearch;
         _damage.DamageGiven -= TakeDamage;
+        _hp.Dead -= OnDeath;
     }
 
+    private void OnDeath()
+    {
+        Died?.Invoke(this);
+    }
 
     private void FixedUpdate()
     {

@@ -5,7 +5,7 @@ public class HitBox : MonoBehaviour
     [SerializeField]
     private HP _hP;
 
-    public bool TakeDamage(int damage, Team team)
+    public virtual bool TakeDamage(int damage, Team team)
     {
         if(_hP.Team != team)
         {

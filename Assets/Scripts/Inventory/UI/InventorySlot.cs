@@ -11,8 +11,6 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     private Image _icon;
     [SerializeField]
     private TextMeshProUGUI _quantityText;
-    [SerializeField]
-    private Button _removeButton;
 
     [Inject]
     private InventoryManager _inventoryManager;
